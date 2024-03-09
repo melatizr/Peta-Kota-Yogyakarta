@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>Peta Administrasi Kota Yogyakarta</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="data/Yogyakartakota_1.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[-7.891440057661929,110.2845386578328],[-7.736870733661935,110.550680909368]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        document.querySelector(".leaflet-popup-pane").addEventListener("load", function(event) {
+          var tagName = event.target.tagName,
+            popup = map._popup;
+          // Also check if flag is already set.
+          if (tagName === "IMG" && popup && !popup._updated) {
+            popup._updated = true; // Set flag to prevent looping.
+            popup.update();
+          }
+        }, true);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_OSMStandard_0');
+        map.getPane('pane_OSMStandard_0').style.zIndex = 400;
+        var layer_OSMStandard_0 = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OSMStandard_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors, CC-BY-SA</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OSMStandard_0;
+        map.addLayer(layer_OSMStandard_0);
+        function pop_Yogyakartakota_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nama Kecamatan</th>\
+                        <td>' + (feature.properties['WADMKC'] !== null ? autolinker.link(feature.properties['WADMKC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nama Kelurahan</th>\
+                        <td>' + (feature.properties['WADMKD'] !== null ? autolinker.link(feature.properties['WADMKD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nama Kabupaten/Kota</th>\
+                        <td>' + (feature.properties['WADMKK'] !== null ? autolinker.link(feature.properties['WADMKK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nama Provinsi</th>\
+                        <td>' + (feature.properties['WADMPR'] !== null ? autolinker.link(feature.properties['WADMPR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_Yogyakartakota_1_0(feature) {
+            switch(String(feature.properties['WADMKD'])) {
+                case 'Kelurahan Baciro':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(131,50,236,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Bausasran':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(234,200,138,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Bener':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,85,218,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Brontokusuman':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(240,95,114,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Bumijo':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(78,156,234,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Cokrodiningratan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(220,133,79,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Demangan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(38,99,204,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Gedongkiwo':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(60,203,53,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Giwangan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(110,215,24,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Gowongan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(231,107,91,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Gunungketur':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(170,220,53,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Kadipaten':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(145,226,127,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Karangwaru':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(121,206,205,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Keparakan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(209,97,200,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Klitren':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(235,240,95,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Kotabaru':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(121,83,215,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Kricak':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(113,181,221,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Mantrijeron':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,197,39,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Muja Muju':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(240,72,116,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Ngampilan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(124,186,207,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Ngupasan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(31,233,152,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Notoprajan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(138,227,239,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Pakuncen':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(58,237,141,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Pandeyan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(20,17,217,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Panembahan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(22,204,58,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Patangpuluhan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(208,23,23,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Patehan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(167,201,119,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Prawirodirjan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(165,94,219,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Prenggan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(239,211,118,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Pringgokusuman':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(222,134,104,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Purbayan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(208,51,156,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Purwokinanti':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(107,90,204,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Rejowinangun':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(33,222,194,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Semaki':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(85,229,133,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Sorosutan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(235,35,115,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Sosromenduran':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(209,126,227,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Suryatmajan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(234,68,198,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Suryodiningratan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(61,228,181,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Tahunan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(226,161,92,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Tegalpanggung':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(201,43,127,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Tegalrejo':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(102,202,56,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Terban':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(172,203,15,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Warungboto':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(88,237,98,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Wirobrajan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(126,149,223,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kelurahan Wirogunan':
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(213,120,218,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Yogyakartakota_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(141,13,200,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Yogyakartakota_1');
+        map.getPane('pane_Yogyakartakota_1').style.zIndex = 401;
+        map.getPane('pane_Yogyakartakota_1').style['mix-blend-mode'] = 'normal';
+        var layer_Yogyakartakota_1 = new L.geoJson(json_Yogyakartakota_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Yogyakartakota_1',
+            layerName: 'layer_Yogyakartakota_1',
+            pane: 'pane_Yogyakartakota_1',
+            onEachFeature: pop_Yogyakartakota_1,
+            style: style_Yogyakartakota_1_0,
+        });
+        bounds_group.addLayer(layer_Yogyakartakota_1);
+        map.addLayer(layer_Yogyakartakota_1);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>Peta Administrasi Kota Yogyakarta</h2>';
+            };
+            title.addTo(map);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'Yogyakarta (kota)<br /><table><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanBaciro0.png" /></td><td>Kelurahan Baciro</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanBausasran1.png" /></td><td>Kelurahan Bausasran</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanBener2.png" /></td><td>Kelurahan Bener</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanBrontokusuman3.png" /></td><td>Kelurahan Brontokusuman</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanBumijo4.png" /></td><td>Kelurahan Bumijo</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanCokrodiningratan5.png" /></td><td>Kelurahan Cokrodiningratan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanDemangan6.png" /></td><td>Kelurahan Demangan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanGedongkiwo7.png" /></td><td>Kelurahan Gedongkiwo</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanGiwangan8.png" /></td><td>Kelurahan Giwangan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanGowongan9.png" /></td><td>Kelurahan Gowongan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanGunungketur10.png" /></td><td>Kelurahan Gunungketur</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanKadipaten11.png" /></td><td>Kelurahan Kadipaten</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanKarangwaru12.png" /></td><td>Kelurahan Karangwaru</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanKeparakan13.png" /></td><td>Kelurahan Keparakan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanKlitren14.png" /></td><td>Kelurahan Klitren</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanKotabaru15.png" /></td><td>Kelurahan Kotabaru</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanKricak16.png" /></td><td>Kelurahan Kricak</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanMantrijeron17.png" /></td><td>Kelurahan Mantrijeron</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanMujaMuju18.png" /></td><td>Kelurahan Muja Muju</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanNgampilan19.png" /></td><td>Kelurahan Ngampilan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanNgupasan20.png" /></td><td>Kelurahan Ngupasan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanNotoprajan21.png" /></td><td>Kelurahan Notoprajan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanPakuncen22.png" /></td><td>Kelurahan Pakuncen</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanPandeyan23.png" /></td><td>Kelurahan Pandeyan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanPanembahan24.png" /></td><td>Kelurahan Panembahan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanPatangpuluhan25.png" /></td><td>Kelurahan Patangpuluhan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanPatehan26.png" /></td><td>Kelurahan Patehan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanPrawirodirjan27.png" /></td><td>Kelurahan Prawirodirjan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanPrenggan28.png" /></td><td>Kelurahan Prenggan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanPringgokusuman29.png" /></td><td>Kelurahan Pringgokusuman</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanPurbayan30.png" /></td><td>Kelurahan Purbayan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanPurwokinanti31.png" /></td><td>Kelurahan Purwokinanti</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanRejowinangun32.png" /></td><td>Kelurahan Rejowinangun</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanSemaki33.png" /></td><td>Kelurahan Semaki</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanSorosutan34.png" /></td><td>Kelurahan Sorosutan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanSosromenduran35.png" /></td><td>Kelurahan Sosromenduran</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanSuryatmajan36.png" /></td><td>Kelurahan Suryatmajan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanSuryodiningratan37.png" /></td><td>Kelurahan Suryodiningratan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanTahunan38.png" /></td><td>Kelurahan Tahunan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanTegalpanggung39.png" /></td><td>Kelurahan Tegalpanggung</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanTegalrejo40.png" /></td><td>Kelurahan Tegalrejo</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanTerban41.png" /></td><td>Kelurahan Terban</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanWarungboto42.png" /></td><td>Kelurahan Warungboto</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanWirobrajan43.png" /></td><td>Kelurahan Wirobrajan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_KelurahanWirogunan44.png" /></td><td>Kelurahan Wirogunan</td></tr><tr><td style="text-align: center;"><img src="legend/Yogyakartakota_1_45.png" /></td><td></td></tr></table>': layer_Yogyakartakota_1,"OSM Standard": layer_OSMStandard_0,}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
